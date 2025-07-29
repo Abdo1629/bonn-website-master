@@ -1,10 +1,8 @@
-"use client";
 
-import { GetStaticProps, GetStaticPaths, InferGetStaticPropsType } from 'next';
 import path from 'path';
-import fs from 'fs';
-import { ParsedUrlQuery } from 'querystring';
-import Image from "next/image";
+import fs from 'fs/promises';
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
 
 type ProductType = {
   id: string;
@@ -16,14 +14,27 @@ type ProductType = {
   image: string;
 };
 
-interface Params extends ParsedUrlQuery {
-  id: string;
+export async function generateStaticParams() {
+  const filePath = path.join(process.cwd(), 'data', 'products.json');
+  const fileData = await fs.readFile(filePath, 'utf-8');
+  const products: ProductType[] = JSON.parse(fileData);
+
+  return products.map((product) => ({
+    id: product.id,
+  }));
 }
 
-export default function ProductPage({
-  product,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  if (!product) return <p>Product Not Found</p>;
+async function getProductById(id: string): Promise<ProductType | null> {
+  const filePath = path.join(process.cwd(), 'data', 'products.json');
+  const fileData = await fs.readFile(filePath, 'utf-8');
+  const products: ProductType[] = JSON.parse(fileData);
+  return products.find((p) => p.id === id) || null;
+}
+
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const product = await getProductById(params.id);
+
+  if (!product) return notFound();
 
   return (
     <div className="p-4">
@@ -33,39 +44,13 @@ export default function ProductPage({
       <p className="mb-1">{product.description_en}</p>
       <p className="mb-1">{product.description_ar}</p>
       <p className="font-semibold mb-2">Price: {product.price}</p>
-      <Image src={product.image} alt={product.name_en} className="w-64 h-64 object-cover rounded" />
+      <Image
+        src={product.image}
+        alt={product.name_en}
+        width={256}
+        height={256}
+        className="object-cover rounded"
+      />
     </div>
   );
 }
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const filePath = path.join(process.cwd(), 'data', 'products.json');
-  const fileData = fs.readFileSync(filePath, 'utf-8');
-  const products: ProductType[] = JSON.parse(fileData);
-
-  const paths = products.map((product) => ({
-    params: { id: product.id },
-  }));
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps<{
-  product: ProductType | null;
-}, Params> = async (context) => {
-  const { id } = context.params!;
-  const filePath = path.join(process.cwd(), 'data', 'products.json');
-  const fileData = fs.readFileSync(filePath, 'utf-8');
-  const products: ProductType[] = JSON.parse(fileData);
-
-  const product = products.find((p) => p.id === id) || null;
-
-  return {
-    props: {
-      product,
-    },
-  };
-};
