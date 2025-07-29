@@ -36,10 +36,10 @@ export default function HeroVideo() {
 
       <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-10" />
 
-      <div className="relative z-20 h-full  align-center flex flex-row items-center max-[768px]:justify-center px-6 gap-10 text-white">
+      <div className="relative z-20 h-full flex flex-row items-center max-[768px]:justify-center px-6 gap-10 text-white">
     
         <motion.div
-          className="w-full align-center justify-center flex flex-col max-[768px]:text-center"
+          className="w-full items-center justify-center flex flex-col max-[768px]:text-center"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
