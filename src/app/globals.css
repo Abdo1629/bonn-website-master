@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+.glow-pink {
+  background: linear-gradient(120deg, #f9a8d4, #ec4899);
+  animation: glow 4s ease-in-out infinite alternate;
+}
+.glow-yellow {
+  background: linear-gradient(120deg, #fde68a, #f59e0b);
+  animation: glow 5s ease-in-out infinite alternate;
+}
+.glow-green {
+  background: linear-gradient(120deg, #86efac, #22c55e);
+  animation: glow 6s ease-in-out infinite alternate;
+}
+
+.glow-blue {
+  background: linear-gradient(120deg, #93c5fd, #3b82f6);
+  animation: glow 7s ease-in-out infinite alternate;
+}
+.glow-purple {
+  background: linear-gradient(120deg, #c4b5fd, #8b5cf6);
+  animation: glow 8s ease-in-out infinite alternate;
+}
+.glow-red {
+  background: linear-gradient(120deg, #fca5a5, #ef4444);
+  animation: glow 9s ease-in-out infinite alternate;
+}
+.glow-sky {
+  background: linear-gradient(120deg, #bfdbfe, #0ea5e9);
+  animation: glow 10s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  0% {
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+  }
+  100% {
+    filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.2));
+  }
+}
+
+.margin-top {
+  margin-top: 65px;
+}
+
+.blinking-cursor {
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
