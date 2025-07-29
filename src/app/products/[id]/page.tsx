@@ -1,4 +1,4 @@
-
+// src/app/products/[id]/page.tsx
 import path from 'path';
 import fs from 'fs/promises';
 import { notFound } from 'next/navigation';
@@ -14,6 +14,7 @@ type ProductType = {
   image: string;
 };
 
+// ✅ توليد الـ Static Params
 export async function generateStaticParams() {
   const filePath = path.join(process.cwd(), 'data', 'products.json');
   const fileData = await fs.readFile(filePath, 'utf-8');
@@ -24,6 +25,7 @@ export async function generateStaticParams() {
   }));
 }
 
+// ✅ قراءة الداتا حسب ID
 async function getProductById(id: string): Promise<ProductType | null> {
   const filePath = path.join(process.cwd(), 'data', 'products.json');
   const fileData = await fs.readFile(filePath, 'utf-8');
@@ -31,7 +33,13 @@ async function getProductById(id: string): Promise<ProductType | null> {
   return products.find((p) => p.id === id) || null;
 }
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+// ✅ صفحة المنتج
+// لازم تكون async ومتاخد params بشكل صحيح
+interface ProductPageProps {
+  params: { id: string };
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
   const product = await getProductById(params.id);
 
   if (!product) return notFound();
