@@ -22,8 +22,9 @@ export default function HeroVideo() {
   };
 
   return (
+    <>
+          <div className="margin-top"></div>
     <div className="relative w-full h-[40vh] min-[768px]:h-[60vh] overflow-hidden mt-[65px]">
-      <div className="margin-top"></div>
       <video
         className="absolute top-0 left-0 w-full h-full object-cover z-0"
         src="/promo1.mp4"
@@ -79,5 +80,6 @@ export default function HeroVideo() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }
