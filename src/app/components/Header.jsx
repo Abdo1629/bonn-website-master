@@ -1,6 +1,6 @@
 "use client";
 
-import Fuse from 'fuse.js';
+import Fuse from "fuse.js";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { useEffect, useState } from "react";
@@ -10,26 +10,48 @@ import { AnimatePresence, motion } from "framer-motion";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { IoCloseSharp } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
-import Image from 'next/image';
+import Image from "next/image";
+import { db } from "../lib/firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function FactoryHeader() {
   const { t } = useTranslation();
-  const router = useRouter();
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [brandsOpen, setBrandsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchError, setSearchError] = useState("");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const factories = [
-    {logo:" " , name: "Covix Care", color: "pink", glow: "glow-pink" },
-    {logo:" " , name: "Rubin", color: "yellow", glow: "glow-yellow" },
-    {logo:" " , name: "B1Care", color: "green", glow: "glow-green" },
-    {logo:" " , name: "Le Visage Plus", color: "sky", glow: "glow-sky" },
-    {logo:" " , name: "PuCare", color: "red", glow: "glow-red" },
-    {logo:" " , name: "Luxury", color: "purple", glow: "glow-purple" },
-  ];
+  const switchLanguage = () => {
+    const newLang = i18n.language === "en" ? "ar" : "en";
+    i18n.changeLanguage(newLang);
+    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+  };
+
+  // ✅ Fetch from Firebase
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsCol = collection(db, "products");
+        const snapshot = await getDocs(productsCol);
+        const productsList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProducts(productsList);
+      } catch (err) {
+        console.error("Error fetching products from Firebase:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
 
   const navItems = [
     { key: "home", path: "/" },
@@ -39,41 +61,29 @@ export default function FactoryHeader() {
     { key: "contact", path: "/contact" },
   ];
 
-  const mockProducts = [
-    {
-      name: { en: "Aloe Vera Face Cream", ar: "كريم وجه بالصبار" },
-      slug: "aloe-vera-face-cream",
-      image: "/images/products/aloe.jpg",
-      price: 35,
-      description: { en: "Hydrating cream with aloe", ar: "كريم مرطب بالصبار" },
-    },
-    {
-      name: { en: "Keratin Hair Serum", ar: "سيروم كيراتين للشعر" },
-      slug: "keratin-hair-serum",
-      image: "/images/products/keratin.jpg",
-      price: 50,
-      description: { en: "Strengthens hair", ar: "يقوي الشعر ويمنع التقصف" },
-    },
-    {
-      name: { en: "Men's Aftershave Balm", ar: "بلسم بعد الحلاقة للرجال" },
-      slug: "mens-aftershave-balm",
-      image: "/images/products/aftershave.jpg",
-      price: 45,
-      description: { en: "Soothing balm", ar: "بلسم مهدئ بعد الحلاقة" },
-    }
+    const factories = [
+    { logo: " ", name: "Covix Care", color: "pink", glow: "glow-pink" },
+    { logo: " ", name: "Rubin", color: "yellow", glow: "glow-yellow" },
+    { logo: " ", name: "B1Care", color: "green", glow: "glow-green" },
+    { logo: " ", name: "Le Visage Plus", color: "sky", glow: "glow-sky" },
+    { logo: " ", name: "PuCare", color: "red", glow: "glow-red" },
+    { logo: " ", name: "Luxury", color: "purple", glow: "glow-purple" },
   ];
 
-  const fuse = new Fuse(mockProducts, {
-    keys: ["name.en", "name.ar"],
-    threshold: 0.4,
-  });
 
+  // ✅ Fuse Search Logic
   useEffect(() => {
-    if (!searchTerm.trim()) {
+    if (!searchTerm.trim() || products.length === 0) {
       setSearchResults([]);
       setSearchError("");
       return;
     }
+
+    const fuse = new Fuse(products, {
+      keys: ["name_en", "name_ar"],
+      threshold: 0.3,
+    });
+
     const results = fuse.search(searchTerm);
     if (results.length > 0) {
       setSearchResults(results.map((r) => r.item));
@@ -82,33 +92,34 @@ export default function FactoryHeader() {
       setSearchResults([]);
       setSearchError(t("productNotFound"));
     }
-  }, [searchTerm]);
+  }, [searchTerm, products]);
 
   const handleSearchAction = () => {
-    if (searchResults.length > 0) {
-      router.push(`/products/${searchResults[0].slug}`);
-      setSearchTerm("");
+    if (!searchTerm.trim()) return;
+    const fuse = new Fuse(products, {
+      keys: ["name_en", "name_ar"],
+      threshold: 0.3,
+    });
+    const results = fuse.search(searchTerm);
+    if (results.length > 0) {
+      setSearchResults(results.map((r) => r.item));
+      setSearchError("");
     } else {
+      setSearchResults([]);
       setSearchError(t("productNotFound"));
     }
-  };
-
-  const switchLanguage = () => {
-    const newLang = i18n.language === "en" ? "ar" : "en";
-    i18n.changeLanguage(newLang);
-    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
   };
 
   return (
     <header className="w-full fixed top-0 left-0 z-50 bg-white/90 backdrop-blur-md shadow-md" dir="ltr">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center relative">
         <div className="flex items-center gap-4 lg:gap-18">
-<Link href="/" className="text-2xl font-bold text-[#0056D2]">
-<Image src="/images/logo.png" alt="company logo" width="70" height="70"/>
-</Link>
+          <Link href="/" className="text-2xl font-bold text-[#0056D2]">
+            <Image src="/images/logo.png" alt="company logo" width="70" height="70" />
+          </Link>
 
-        {/*Search Bar */}
-        <div className="max-[768px]:hidden relative">
+          {/* ✅ Search Bar */}
+          <div className="max-[768px]:hidden relative">
             <div className="flex items-center gap-2">
               <div className="relative">
                 <FaSearch
@@ -124,36 +135,38 @@ export default function FactoryHeader() {
                   className="w-[250px] max-[850px]:w-[190px] pl-8 text-sm px-3 py-1 border border-[#0056D2] rounded hover:bg-[#0058d210] transition"
                 />
               </div>
-              
+
               <button
                 onClick={switchLanguage}
                 className=" w-[60px] h-[30px] rounded-sm text-[#0056D2] cursor-pointer border border-[#0056D2] hover:bg-[#0058d210] transition"
                 aria-label="Switch Language"
               >
-                  {i18n.language === "ar" ? "العربية" : "English"}
+                {i18n.language === "ar" ? "العربية" : "English"}
               </button>
             </div>
+
+            {/* ✅ Search Results Dropdown */}
             {searchTerm && (
               <div className="absolute z-50 bg-white border border-gray-200 rounded shadow-md mt-1 w-[250px] max-[850px]:w-[190px] max-h-60 overflow-auto">
                 {searchResults.length > 0 ? (
                   searchResults.map((product) => (
-            <Link
-            dir={i18n.language === "ar" ? "rtl" : "ltr"}
-              key={product.slug}
-              href={`/products/${product.slug}`}
-              className="flex items-center p-2 hover:bg-gray-100 transition"
-            >
-              <img
-                src={product.image}
-                alt={product.name[i18n.language]}
-                className="w-10 h-10 rounded object-cover mr-2"
-              />
-              <div className="text-sm pr-5 pl-5">
-                <div className="font-medium text-gray-900">{product.name[i18n.language]}</div>
-                <div className="text-gray-500">{product.description[i18n.language]}</div>
-                <div className="text-[#0056D2] font-bold mt-1">{product.price}  {i18n.language === "ar" ? "ر.س" : "SAR"}</div>
-              </div>
-            </Link>
+                    <Link
+                      key={product.id}
+                      href={`/products/${product.slug}`}
+                      dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                      className="flex items-center p-2 hover:bg-gray-100 transition"
+                    >
+                      <img
+                        src={product.image}
+                        alt={i18n.language === "ar" ? product.name_ar : product.name_en}
+                        className="w-10 h-10 rounded object-cover mr-2"
+                      />
+                      <div className="text-sm pr-5 pl-5">
+                        <div className="font-medium text-gray-900">{i18n.language === "ar" ? product.name_ar : product.name_en}</div>
+                        <div className="text-gray-500">{i18n.language === "ar" ? product.description_ar : product.description_en}</div>
+                        <div className="text-[#0056D2] font-bold mt-1">{parseFloat(product.price).toFixed(2)} {i18n.language === "ar" ? "ر.س" : "SAR"}</div>
+                      </div>
+                    </Link>
                   ))
                 ) : (
                   <div className="p-2 text-sm text-gray-600">{searchError}</div>
@@ -162,7 +175,7 @@ export default function FactoryHeader() {
             )}
           </div>
         </div>
-        <nav className="hidden md:flex items-center lg:gap-6 md:gap-3">
+<nav className="hidden md:flex items-center lg:gap-6 md:gap-3">
           {navItems.map((item) => (
             <Link
               key={item.key}

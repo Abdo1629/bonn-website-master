@@ -23,7 +23,6 @@ export default function HeroVideo() {
 
   return (
     <>
-          <div className="margin-top"></div>
     <div className="relative w-full h-[40vh] min-[768px]:h-[60vh] overflow-hidden mt-[65px]">
       <video
         className="absolute top-0 left-0 w-full h-full object-cover z-0"

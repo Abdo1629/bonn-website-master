@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Fjalla_One , Geist_Mono} from "next/font/google";
 import i18n from "../i18n";
+import Header from './components/Header';
 
 const geistSans = Fjalla_One({
   variable: "--font-geist-sans",
@@ -81,6 +82,8 @@ export default function RootLayout({
     <html lang={i18n.language} dir={i18n.language === "ar" ? "rtl" : "ltr"}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <I18nProvider>
+          <Header />
+           <div className="margin-top"></div>
           {children}
         </I18nProvider>
       </body>
