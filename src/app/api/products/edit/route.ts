@@ -1,24 +1,22 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+// src/app/api/products/edit/route.ts
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../lib/firebaseConfig";
 import { doc, updateDoc } from "firebase/firestore";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "PUT") {
-    return res.status(405).json({ message: "Only PUT allowed" });
-  }
-
-  const { id } = req.query;
-  const updatedData = req.body;
-
+export async function PUT(req: NextRequest) {
   try {
-    const docRef = doc(db, "products", id as string);
+    const { id, ...updatedData } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ message: "Product ID is required" }, { status: 400 });
+    }
+
+    const docRef = doc(db, "products", id);
     await updateDoc(docRef, updatedData);
-    return res.status(200).json({ message: "Product updated successfully" });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Error updating product" });
+
+    return NextResponse.json({ message: "Product updated successfully" }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Error updating product" }, { status: 500 });
   }
 }
