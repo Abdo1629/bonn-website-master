@@ -79,7 +79,7 @@ export default function Products() {
             price: Number(data.price),
             image: data.image,
             bestSelling: data.bestSelling,
-            likes: data.likes ?? 0, // important fallback
+            likes: data.likes ?? 0, 
           };
         });
 
@@ -125,7 +125,7 @@ export default function Products() {
 
               {/* Best Seller */}
               {product.bestSelling && (
-                <span className="absolute top-2 left-2 bg-[#FFD700] text-white text-xs font-bold px-2 py-1 rounded">
+                <span className="absolute top-2 left-2 bg-red-600  text-white text-xs font-bold px-2 py-1 rounded">
                   {isArabic ? "الأكثر مبيعًا" : "Best Seller"}
                 </span>
               )}

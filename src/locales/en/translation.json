@@ -11,7 +11,7 @@
   "button": "See Our Products",
   "video-subtitle":"A Whole New Look",
   "whoWeAre": "Who We Are..? ",
-  "weAreDifferent": "We Are Diffrent ",
+  "weAreDifferent": "About Us ",
   "bmiIsFuture": "Bonn Is The Future ",
   "aboutParagraph1": "BMI is a medical manufacturer located in Riyadh, Saudi Arabia. Equipped with the latest and most advanced machinery that meets cGMP standards, we are confident in our ability to deliver innovative and high-quality products, including customized formulations tailored to client needs.",
   "aboutParagraph2": "We are licensed to produce Cosmetics, Medical Devices, and Health Products by the SFDA, and meet global standards such as ISO 9001:2015, ISO 13485:2016, and cGMP.",
@@ -88,5 +88,11 @@
   "options.partner": "Partnership",
   "options.other": "Other",
   "theAddress": "Riyadh, Saudi Arabia",
-  "workingHours": "Sunday to Thursday, 9 AM - 5 PM"
+  "workingHours": "Sunday to Thursday, 8 AM - 6 PM",
+  "footer": {
+    "description": "Your trusted partner in quality healthcare and cosmetics manufacturing.",
+    "links": "Quick Links",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved."
+  }
 }

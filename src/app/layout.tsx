@@ -1,14 +1,15 @@
 import I18nProvider from "./i18n-provider";
 import type { Metadata } from "next";
 import "./globals.css";
-import { Fjalla_One , Geist_Mono} from "next/font/google";
+import { Titillium_Web, Geist_Mono } from "next/font/google";
 import i18n from "../i18n";
 import Header from './components/Header';
+import Footer from './components/Footer';
 
-const geistSans = Fjalla_One({
-  variable: "--font-geist-sans",
+
+const titillium = Titillium_Web({
   subsets: ["latin"],
-  weight: "400",
+  weight: ["400"],
 });
 
 const geistMono = Geist_Mono({
@@ -80,11 +81,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang={i18n.language} dir={i18n.language === "ar" ? "rtl" : "ltr"}>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${titillium.className} antialiased`}>
         <I18nProvider>
           <Header />
            <div className="margin-top"></div>
           {children}
+          <Footer />
         </I18nProvider>
       </body>
     </html>

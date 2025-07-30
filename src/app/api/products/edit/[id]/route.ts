@@ -1,6 +1,6 @@
 // src/app/api/products/edit/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "../../../lib/firebaseConfig";
+import { db } from "../../../../lib/firebaseConfig";
 import { doc, updateDoc } from "firebase/firestore";
 
 export async function PUT(req: NextRequest) {

@@ -23,6 +23,15 @@ type Product = {
 };
 
 const BRANDS = ["Brand 1", "Brand 2", "Brand 3", "Brand 4", "Brand 5", "Brand 6"];
+function generateSlug(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "") 
+    .replace(/-+$/, ""); 
+}
 
 export default function AdminPage() {
   const { t } = useTranslation();
@@ -85,7 +94,8 @@ export default function AdminPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalProduct = { ...product, outlets };
+    const slug = generateSlug(product.name_en || `product-${Date.now()}`);
+    const finalProduct = { ...product, outlets , slug};
     const res = await fetch(isEditing ? `/api/products/edit/${product.id}` : "/api/products/add", {
       method: isEditing ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -168,7 +178,7 @@ export default function AdminPage() {
 
           <div className="grid gap-4">
             {sortedProducts.map((p) => (
-              <div key={p.id} className="border rounded-lg p-4 shadow flex justify-between flex-wrap items-start">
+              <div key={p.id} className="border rounded-lg p-4 shadow flex justify-between flex-no-wrap items-start">
                 <div>
                   <h2 className="text-xl font-semibold mb-1 ">{p.name_en}</h2>
                   <p className="text-sm text-gray-600">{p.price} SAR</p>

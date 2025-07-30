@@ -19,7 +19,8 @@ export default function ContactUs() {
   const [submitted, setSubmitted] = useState(false);
 
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -42,17 +43,19 @@ export default function ContactUs() {
       <motion.div
         variants={fadeUp}
         initial="hidden"
+        ref={ref}
         animate={inView ? "visible" : "hidden"}
         transition={{ duration: 0.6 }}
         className="text-center"
       >
-        <h2 className="text-4xl font-bold mb-2">{t("title")}</h2>
+        <h2 className="text-4xl font-bold text-[#0056D2] mb-1 text-center">{t("title")}</h2>
         <p className="text-gray-600">{t("subtitle")}</p>
       </motion.div>
 
       <motion.div
         variants={fadeUp}
         initial="hidden"
+       ref={ref}
         animate={inView ? "visible" : "hidden"}
         transition={{ duration: 0.7, delay: 0.2 }}
         className="grid md:grid-cols-2 gap-8"
@@ -145,7 +148,7 @@ export default function ContactUs() {
           >
             {t("send")}
           </button>
-          {submitted && <p className="text-green-600" dir={isArabic ? "rtl" : "ltr"}>{t("submit.success")}</p>}
+          {submitted && <p className="text-green-600">{t("submit.success")}</p>}
         </form>
       </motion.div>
 
@@ -153,6 +156,7 @@ export default function ContactUs() {
       <motion.div
         variants={fadeUp}
         initial="hidden"
+        ref={ref}
         animate={inView ? "visible" : "hidden"}
         transition={{ duration: 0.6, delay: 0.3 }}
         className="w-full h-[300px]"
