@@ -194,7 +194,7 @@ export default function AdminPage() {
         </>
       ) : (
        <form onSubmit={handleSubmit} className="space-y-6 mt-10 bg-white p-6 rounded-xl shadow">
-  <h1 className="text-2xl font-bold mb-4 text-center">{isEditing ? t("editProduct") : t("addProduct")}</h1>
+  <h2 className="text-2xl font-bold mb-4 text-center">{isEditing ? t("editProduct") : t("addProduct")}</h2>
 
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     <input name="id" value={product.id} onChange={handleChange} placeholder="ID" className="border border-[#0056D2] rounded hover:bg-[#0058d210] transition" />

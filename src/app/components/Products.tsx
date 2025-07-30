@@ -106,10 +106,10 @@ export default function Products() {
 
   return (
     <section className="py-16 px-4 md:px-12 bg-[#F4F8FF] w-full">
-      <h2 className="text-2xl font-bold text-[#0056D2] mb-1 text-center">
+      <h2 className="text-4xl font-bold text-[#0056D2] mb-1 text-center">
         {t("products_title")}
       </h2>
-      <p className="text-sm text-gray-500 capitalize mb-6 text-center">
+      <p className="text-lg text-gray-500 capitalize mb-6 text-center">
         {t("brand_message") || "رحلة تستحق التجربة"}
       </p>
 
