@@ -42,9 +42,7 @@ export default function ContactUs() {
     <div className="max-w-5xl mx-auto p-6 space-y-10" dir="ltr">
       <motion.div
         variants={fadeUp}
-        initial="hidden"
-        ref={ref}
-        animate={inView ? "visible" : "hidden"}
+        animate= "visible"
         transition={{ duration: 0.6 }}
         className="text-center"
       >
@@ -54,9 +52,7 @@ export default function ContactUs() {
 
       <motion.div
         variants={fadeUp}
-        initial="hidden"
-       ref={ref}
-        animate={inView ? "visible" : "hidden"}
+        animate= "visible"
         transition={{ duration: 0.7, delay: 0.2 }}
         className="grid md:grid-cols-2 gap-8"
       >
@@ -155,9 +151,7 @@ export default function ContactUs() {
       {/* Google Map */}
       <motion.div
         variants={fadeUp}
-        initial="hidden"
-        ref={ref}
-        animate={inView ? "visible" : "hidden"}
+        animate= "visible"
         transition={{ duration: 0.6, delay: 0.3 }}
         className="w-full h-[300px]"
       >
