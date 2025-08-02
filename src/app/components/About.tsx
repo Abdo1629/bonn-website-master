@@ -7,6 +7,7 @@ import { useEffect , useRef, useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Image from "next/image";
 import clsx from "clsx";
+import Link from "next/link";
 
 
 const aboutImages = [
@@ -198,6 +199,13 @@ useEffect(() => {
           <p className="text-lg leading-relaxed text-[#1A3351]">
             {t("aboutParagraph2")}
           </p>
+          <Link
+  href="/about-us"
+  className="inline-block mt-4 text-[#0056D2] font-semibold hover:underline transition"
+>
+  {t("readMore")}
+</Link>
+
           <div className="mt-8 grid grid-cols-1 max-[530px]:grid-cols-1 max-[768px]:grid-cols-3 min-[768px]:grid-cols-3 gap-4">
             <CapabilityCard value={50} suffix="+" label={t("capability1")} />
             <CapabilityCard value={100000} suffix="+" label={t("capability2")} />

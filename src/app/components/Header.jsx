@@ -1,5 +1,6 @@
 "use client";
 
+
 import Fuse from "fuse.js";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
@@ -15,6 +16,7 @@ import { db } from "../lib/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function FactoryHeader() {
+  const [showIntro, setShowIntro] = useState(true);
   const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
@@ -31,6 +33,31 @@ export default function FactoryHeader() {
     i18n.changeLanguage(newLang);
     document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
   };
+
+  const navVariants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.5,
+    },
+  },
+};
+
+const linkVariant = {
+  hidden: { opacity: 0, y: -10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
+
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setShowIntro(false);
+  }, 3000);
+
+  return () => clearTimeout(timer);
+}, []);
+
 
   // ✅ Fetch from Firebase
   useEffect(() => {
@@ -111,7 +138,41 @@ export default function FactoryHeader() {
   };
 
   return (
-    <header className="w-full fixed top-0 left-0 z-50 bg-white/90 backdrop-blur-md shadow-md" dir="ltr">
+    <>
+    {showIntro && (
+  <motion.div
+    initial={{ opacity: 1 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 bg-white z-[999] flex flex-col justify-center items-center"
+  >
+    <motion.img
+      src="/images/logo.png"
+      alt="logo"
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 1 }}
+      className="w-[120px] h-[120px] object-contain"
+    />
+
+    <motion.h1
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 1, duration: 1 }}
+      className="mt-6 text-2xl font-bold text-[#0056D2]"
+    >
+      {i18n.language === "ar" ? "احلامك، مهمتنا" : "Your Dreams, Our Mission"}
+    </motion.h1>
+  </motion.div>
+)}
+
+    <motion.header
+  initial={{ opacity: 1 , y: -50 }}
+  animate={{ opacity: showIntro ? 0 : 1, y: showIntro ? -50 : 0 }}
+  transition={{ delay: 0.5, duration: 0.6 }}
+  className="w-full fixed top-0 left-0 z-50 bg-white/90 backdrop-blur-md shadow-md"
+  dir="ltr"
+>
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center relative">
         <div className="flex items-center gap-4 lg:gap-18">
           <Link href="/" className="text-2xl font-bold text-[#0056D2]">
@@ -176,42 +237,54 @@ export default function FactoryHeader() {
           </div>
         </div>
 <nav className="hidden md:flex items-center lg:gap-6 md:gap-3">
-          {navItems.map((item) => (
-            <Link
-              key={item.key}
-              href={item.path}
-              className={`relative font-medium transition-colors ${
-                pathname === item.path
-                  ? "text-[#0056D2] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-[#0056D2]"
-                  : "text-gray-700 hover:text-[#0056D2]"
-              } group`}
-            >
-              <span className="relative z-10">{t(item.key)}</span>
-              <span className="absolute bottom-[-4] left-0 w-0 h-[2px] bg-[#0056D2] group-hover:w-full transition-all duration-300"></span>
-            </Link>
-          ))}
+  {navItems.map((item, index) => (
+    <motion.div
+      key={item.key}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 + index * 0.15, duration: 0.4 }} // تأخير تدريجي بين كل عنصر
+    >
+      <Link
+        href={item.path}
+        className={`relative font-medium transition-colors ${
+          pathname === item.path
+            ? "text-[#0056D2] after:absolute after:left-0 after:-bottom-1 after:w-full after:h-[2px] after:bg-[#0056D2]"
+            : "text-gray-700 hover:text-[#0056D2]"
+        } group`}
+      >
+        <span className="relative z-10">{t(item.key)}</span>
+        <span className="absolute bottom-[-4] left-0 w-0 h-[2px] bg-[#0056D2] group-hover:w-full transition-all duration-300"></span>
+      </Link>
+    </motion.div>
+  ))}
 
+  {/* زر الماركات */}
+  <motion.div
+    initial={{ opacity: 0, y: -10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.3 + navItems.length * 0.15, duration: 0.4 }}
+    className="relative flex items-center cursor-pointer"
+    onClick={() => setBrandsOpen(!brandsOpen)}
+  >
+    <div className="flex flex-col items-center justify-center gap-[3px]">
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          className={`w-1.5 h-1.5 rounded-full ${brandsOpen ? "bg-[#0056D2]" : "bg-gray-700"}`}
+          animate={
+            brandsOpen
+              ? {
+                  y: [0, -4, 0],
+                  transition: { delay: i * 0.1, repeat: Infinity, duration: 0.6 },
+                }
+              : {}
+          }
+        />
+      ))}
+    </div>
+  </motion.div>
+</nav>
 
-
-          <div
-            className="relative flex items-center cursor-pointer"
-            onClick={() => setBrandsOpen(!brandsOpen)}
-          >
-            
-            <div className="flex flex-col items-center justify-center gap-[3px]">
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className={`w-1.5 h-1.5 rounded-full ${brandsOpen ? "bg-[#0056D2]" : "bg-gray-700"}`}
-                  animate={brandsOpen ? {
-                    y: [0, -4, 0],
-                    transition: { delay: i * 0.1, repeat: Infinity, duration: 0.6 }
-                  } : {}}
-                />
-              ))}
-            </div>
-          </div>
-        </nav>
         <AnimatePresence>
   {brandsOpen && (
     <motion.div
@@ -366,6 +439,7 @@ export default function FactoryHeader() {
         )}
       </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
+    </>
   );
 }

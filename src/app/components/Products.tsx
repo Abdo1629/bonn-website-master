@@ -7,6 +7,8 @@ import i18n from "../../i18n";
 import { db } from "../lib/firebaseConfig";
 import { collection, getDocs, doc, updateDoc, increment } from "firebase/firestore";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { FaStethoscope, FaHandHoldingMedical, FaHeartbeat, FaMicroscope, FaHospitalAlt, FaSyringe } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 // 1. Define Product Type
 interface ProductType {
@@ -22,10 +24,49 @@ interface ProductType {
   likes?: number;
 }
 
+const services = [
+    {
+      id: 1,
+      icon: <FaStethoscope className="text-[#F59E0B] text-3xl" />,
+      titleKey: "clinic_support",
+      descKey: "clinic_support_desc",
+    },
+    {
+      id: 2,
+      icon: <FaHandHoldingMedical className="text-[#F59E0B] text-3xl" />,
+      titleKey: "derma_products",
+      descKey: "derma_products_desc",
+    },
+    {
+      id: 3,
+      icon: <FaHeartbeat className="text-[#F59E0B] text-3xl" />,
+      titleKey: "medical_consulting",
+      descKey: "medical_consulting_desc",
+    },
+    {
+      id: 4,
+      icon: <FaMicroscope className="text-[#F59E0B] text-3xl" />,
+      titleKey: "lab_equipment",
+      descKey: "lab_equipment_desc",
+    },
+    {
+      id: 5,
+      icon: <FaHospitalAlt className="text-[#F59E0B] text-3xl" />,
+      titleKey: "hospital_solutions",
+      descKey: "hospital_solutions_desc",
+    },
+    {
+      id: 6,
+      icon: <FaSyringe className="text-[#F59E0B] text-3xl" />,
+      titleKey: "injection_services",
+      descKey: "injection_services_desc",
+    },
+  ];
+
+
 export default function Products() {
   const { t } = useTranslation();
   const isArabic = i18n.language === "ar";
-
   const [productsData, setProductsData] = useState<ProductType[]>([]);
   const [likedProducts, setLikedProducts] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
@@ -106,12 +147,42 @@ export default function Products() {
 
   return (
     <section className="py-16 px-4 md:px-12 bg-[#F4F8FF] w-full">
-      <h2 className="text-4xl font-bold text-[#0056D2] mb-1 text-center">
-        {t("products_title")}
+            <h2 className="text-4xl font-bold text-[#0056D2] mb-1 text-center">
+        {t("services_title")}
       </h2>
       <p className="text-lg text-gray-500 capitalize mb-6 text-center">
-        {t("brand_message") || "رحلة تستحق التجربة"}
+        {t("services_subtitle")}
       </p>
+
+      <div
+        dir={isArabic ? "rtl" : "ltr"}
+        className="flex gap-4 overflow-x-auto pb-2 scroll-smooth scrollbar-hide"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        {services.map((service, index) => (
+          <motion.div
+            key={service.id}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
+            viewport={{ once: true }}
+            className="relative min-w-[250px] max-w-[250px] bg-white border border-[#E0E7FF] rounded-xl p-4 shadow hover:shadow-lg hover:scale-[1.02] transition cursor-pointer h-full"
+          >
+            {/* Icon */}
+            <div className="mb-4">{service.icon}</div>
+
+            {/* Title */}
+            <h3 className="text-base font-semibold text-[#0056D2] mb-1 truncate">
+              {t(service.titleKey)}
+            </h3>
+
+            {/* Description */}
+            <p className="text-xs text-gray-600 mb-2 line-clamp-3">
+              {t(service.descKey)}
+            </p>
+          </motion.div>
+        ))}
+      </div>
 
       {/* Scrollable Container */}
       <div
