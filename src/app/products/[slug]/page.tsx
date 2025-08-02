@@ -4,12 +4,6 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Heart } from "lucide-react";
 
-interface ProductDetailsPageProps {
-  params: {
-    slug: string;
-  };
-}
-
 interface ProductType {
   id: string;
   slug: string;
@@ -42,6 +36,12 @@ async function getProductBySlug(slug: string): Promise<ProductType | null> {
     ...productDoc.data(),
   } as ProductType;
 }
+
+type ProductDetailsPageProps = {
+  params: {
+    slug: string;
+  };
+};
 
 export default async function ProductDetailsPage({ params }: ProductDetailsPageProps) {
   const product = await getProductBySlug(params.slug);
