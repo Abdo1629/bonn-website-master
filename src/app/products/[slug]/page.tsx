@@ -1,4 +1,4 @@
-import { doc, getDocs, collection } from "firebase/firestore";
+import { getDocs, collection } from "firebase/firestore";
 import { db } from "@/app/lib/firebaseConfig";
 import { notFound } from "next/navigation";
 import Image from "next/image";
